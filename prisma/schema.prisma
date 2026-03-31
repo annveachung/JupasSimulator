@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  username           String   @unique
+  passwordHash       String
+  admittedChoiceRank Int
+  resetCount         Int      @default(0)
+  choices            Choice[]
+  createdAt          DateTime @default(now())
+}
+
+model Choice {
+  id         String @id @default(cuid())
+  userId     String
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rank       Int
+  jupasCode  String
+  university String
+  program    String
+
+  @@unique([userId, rank])
+}
